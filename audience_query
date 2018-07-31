@@ -1,0 +1,9 @@
+INSERT OVERWRITE DIRECTORY '/user/fahad/data/audience/Boston_timeseries' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' ESCAPED BY '"' LINES TERMINATED BY '\n'  
+select ghash,localyear,localmonth,localday,localhour, duration,sum(eventcount) as sum,count(*) as count from 
+( 
+select default.geohashstring(default.latfromgeohash(centroid),default.lngfromgeohash(centroid),6) as ghash,localyear,localmonth,localday,localhour,transit,paname,pascore,localid,eventcount,duration 
+from audience.daily_spans 
+where transit='AT_A_PLACE' 
+and default.geohashstring(default.latfromgeohash(centroid),default.lngfromgeohash(centroid),5)='drt2y' 
+) t1 
+group by ghash,localyear,localhour,localday,localmonth,duration;
